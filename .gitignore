@@ -211,3 +211,5 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+/db.sql
+/data/videos.json
