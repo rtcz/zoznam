@@ -1,1 +1,9 @@
 /* main stylesheet */
+
+.card-header {
+    height: 72pt;
+}
+
+.badge.bg-light {
+    color: gray;
+}

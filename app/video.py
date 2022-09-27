@@ -42,7 +42,8 @@ def videos_json_to_db(source: str):
                 db.session.add(video)
 
                 video_feature_list = item.get('features', ())
-                for feature_name in video_feature_list:
+                for feature_name in video_feature_list: # type: str
+                    # feature_name = feature_name.removeprefix('DEMO_')
                     feature_set.add(feature_name)
 
             db.session.commit()

@@ -22,6 +22,10 @@ class Feature(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
+    @property
+    def nice_name(self):
+        return self.name.removeprefix('DEMO_')
+
     videos = relationship('VideoFeature', back_populates='feature')
 
 
