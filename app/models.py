@@ -4,17 +4,17 @@ from sqlalchemy.orm import relationship
 from app import db
 
 
-class Movie(db.Model):
-    __tablename__ = 'movies'
+class Video(db.Model):
+    __tablename__ = 'videos'
     id = Column(Integer, primary_key=True)
 
     name = Column(String, nullable=False, unique=True)
-    icon_uri = Column(String, nullable=False, unique=True)
+    icon_uri = Column(String, nullable=False)
     description = Column(String)
     disabled = Column(Boolean, nullable=False)
     is_featured = Column(Boolean, nullable=False)
 
-    features = relationship('MovieFeature', back_populates='movie')
+    features = relationship('VideoFeature', back_populates='video')
 
 
 class Feature(db.Model):
@@ -22,13 +22,13 @@ class Feature(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    movies = relationship('MovieFeature', back_populates='feature')
+    videos = relationship('VideoFeature', back_populates='feature')
 
 
-class MovieFeature(db.Model):
-    __tablename__ = 'movies_features'
-    movie_id = Column(Integer, ForeignKey('movies.id'), primary_key=True)
+class VideoFeature(db.Model):
+    __tablename__ = 'videos_features'
+    video_id = Column(Integer, ForeignKey('videos.id'), primary_key=True)
     feature_id = Column(Integer, ForeignKey('features.id'), primary_key=True)
 
-    movie = relationship('Movie', back_populates="features")
-    feature = relationship('Feature', back_populates="movies")
+    video = relationship('Video', back_populates="features")
+    feature = relationship('Feature', back_populates="videos")
