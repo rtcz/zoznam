@@ -7,10 +7,14 @@
         <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">{{title}}</h1>
             <p class="lead text-muted">{{description}}</p>
-            <p>
-                <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
-            </p>
+
+            <div class="btn-group">
+                <a href="{{ url_for('main.index', order='asc', filter=filter) }}"
+                   class="btn btn-primary {{ 'active' if order == 'asc' else ''}}">Ascending</a>
+                <a href="{{ url_for('main.index', order='desc', filter=filter) }}"
+                   class="btn btn-primary {{ 'active' if order == 'desc' else ''}}">Descending</a>
+            </div>
+
         </div>
     </div>
 </section>
@@ -40,19 +44,19 @@
 
                             {% if video.disabled %}
 
-                            <div class="badge text-bg-danger">DISABLED</div>
+                            <a href="{{ url_for('main.index', order=order, filter='disabled') }}" class="badge text-bg-danger">DISABLED</a>
 
                             {% endif %}
 
                             {% if video.is_featured %}
 
-                            <div class="badge text-bg-success">FEATURED</div>
+                            <a href="{{ url_for('main.index', order=order, filter='featured') }}" class="badge text-bg-success">FEATURED</a>
 
                             {% endif %}
 
                             {% for video_feature in video.features %}
 
-                            <div class="badge bg-light">{{ video_feature.feature.nice_name }}</div>
+                            <a href="{{ url_for('main.index', order=order, filter=video_feature.feature.name) }}" class="badge bg-light">{{ video_feature.feature.nice_name }}</a>
 
                             {% endfor %}
 

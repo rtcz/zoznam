@@ -7,3 +7,12 @@
 .badge.bg-light {
     color: gray;
 }
+
+a.badge {
+    text-decoration: none;
+}
+
+a.badge:hover {
+    color: white;
+    background-color: black !important;
+}
