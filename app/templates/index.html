@@ -9,12 +9,20 @@
             <p class="lead text-muted">{{description}}</p>
 
             <div class="btn-group">
+
+                {% if filter %}
+
+                <a href="{{ url_for('main.index', order='desc') }}"
+                   class="btn btn-secondary {{ 'active' if order == 'desc' else ''}}">{{ nice_filter }}&nbsp;<i class="bi bi-x-circle"></i></a>
+
+
+                {% endif %}
+
                 <a href="{{ url_for('main.index', order='asc', filter=filter) }}"
                    class="btn btn-primary {{ 'active' if order == 'asc' else ''}}">Ascending</a>
                 <a href="{{ url_for('main.index', order='desc', filter=filter) }}"
                    class="btn btn-primary {{ 'active' if order == 'desc' else ''}}">Descending</a>
             </div>
-
         </div>
     </div>
 </section>
@@ -44,19 +52,22 @@
 
                             {% if video.disabled %}
 
-                            <a href="{{ url_for('main.index', order=order, filter='disabled') }}" class="badge text-bg-danger">DISABLED</a>
+                            <a href="{{ url_for('main.index', order=order, filter='disabled') }}"
+                               class="badge text-bg-danger">DISABLED</a>
 
                             {% endif %}
 
                             {% if video.is_featured %}
 
-                            <a href="{{ url_for('main.index', order=order, filter='featured') }}" class="badge text-bg-success">FEATURED</a>
+                            <a href="{{ url_for('main.index', order=order, filter='is_featured') }}"
+                               class="badge text-bg-success">FEATURED</a>
 
                             {% endif %}
 
                             {% for video_feature in video.features %}
 
-                            <a href="{{ url_for('main.index', order=order, filter=video_feature.feature.name) }}" class="badge bg-light">{{ video_feature.feature.nice_name }}</a>
+                            <a href="{{ url_for('main.index', order=order, filter=video_feature.feature.name) }}"
+                               class="badge bg-light">{{ video_feature.feature.nice_name }}</a>
 
                             {% endfor %}
 

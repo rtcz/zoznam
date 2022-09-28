@@ -3,9 +3,10 @@ import os.path
 
 from flask import Blueprint, render_template, current_app as app, request
 from sqlalchemy import desc, asc, collate
+from sqlalchemy.orm import Query
 
+from app.models import Video, db, VideoFeature, Feature
 from app.video import download_videos_json, videos_json_to_db
-from app.models import Video
 
 main_bp = Blueprint('main', __name__)
 
@@ -14,7 +15,7 @@ main_bp = Blueprint('main', __name__)
 def index():
     # process the parameters
     order = request.args.get('order', 'asc')
-    filter = request.args.get('filter', '')
+    filter = request.args.get('filter')
 
     # check if videos json was updated
     data_dir = app.config['DATA_FOLDER']
@@ -35,11 +36,33 @@ def index():
     else:
         app.logger.warn('the videos json file in not available')
 
+    # assemble the video db query
+    query = db.session.query(Video)  # type: Query
+
+    # filter according to the selected tag
+    if filter == 'is_featured':
+        query = query.filter_by(is_featured=True)
+    elif filter == 'disabled':
+        query = query.filter_by(disabled=True)
+    elif filter is not None:
+        query = query.join(VideoFeature).join(Feature).filter_by(name=filter)
+
     # use case insensitive ordering
     if order == 'asc':
-        videos = Video.query.order_by(asc(collate(Video.name, 'NOCASE'))).all()
+        query = query.order_by(asc(collate(Video.name, 'NOCASE')))
     elif order == 'desc':
-        videos = Video.query.order_by(desc(collate(Video.name, 'NOCASE'))).all()
+        query = query.order_by(desc(collate(Video.name, 'NOCASE')))
+
+    videos = query.all()
+
+    if filter == 'is_featured':
+        nice_filter = 'FEATURED'
+    elif filter == 'disabled':
+        nice_filter = 'DISABLED'
+    elif filter is not None:
+        nice_filter = filter.removeprefix('DEMO_')
+    else:
+        nice_filter = filter
 
     return render_template(
         'index.html',
@@ -47,5 +70,6 @@ def index():
         description='The list of videos',
         videos=videos,
         order=order,
-        filter=filter
+        filter=filter,
+        nice_filter=nice_filter
     )
